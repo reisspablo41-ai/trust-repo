@@ -91,7 +91,7 @@ export default function RootLayout({ children }) {
         />
         <meta
           name="google-site-verification"
-          content="gLwR-ISOyVSDF9CIr6UA4OL3gWeao6kJZwPuwR2Fyqk"
+          content="gM_uQO8QvZFIBFJqUs_PW4X8Uh35wttDBEu0_zTcAHM"
         />
       </head>
       <body
