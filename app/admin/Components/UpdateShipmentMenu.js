@@ -36,11 +36,16 @@ function UpdateShipmentMenu({
   const [shipmentType, setShipmentType] = useState('');
   const [localUsers, setLocalUsers] = useState(users || []);
   const [localTransittimes, setLocalTransittimes] = useState(transittimes || []);
+  const [localShippingTypes, setLocalShippingTypes] = useState(shippingtype || []);
 
   useEffect(() => {
     fetch('/api/lookup?table=transittimes')
       .then((r) => r.json())
       .then(({ data }) => { if (data?.length > 0) setLocalTransittimes(data); });
+
+    fetch('/api/lookup?table=shippingtypes')
+      .then((r) => r.json())
+      .then(({ data }) => { if (data?.length > 0) setLocalShippingTypes(data); });
   }, []);
 
   // Dynamically fetch users when the menu opens to ensure the sender/receiver list is up-to-date
@@ -651,7 +656,7 @@ function UpdateShipmentMenu({
                       name="shipping_type_id"
                       value={formData.shipping_type_id}
                     >
-                      {shippingtype.map((shipping) => (
+                      {localShippingTypes.map((shipping) => (
                         <option
                           key={shipping.shipping_type_id}
                           value={shipping.shipping_type_id}

@@ -28,7 +28,9 @@ function CreateShipmentForm({
   transitError,
   allPackageType,
   packageError,
-  statuses
+  statuses,
+  shippingtype: shippingTypeProp,
+  shippingError,
 }) {
   const router = useRouter();
   const [countries, setCountries] = useState([]);
@@ -38,7 +40,8 @@ function CreateShipmentForm({
     useState('');
   const [packageStatus, setPackageStatus] = useState(statuses?.[0]?.status_id || '');
   const [statusesList, setStatusesList] = useState(statuses || []);
-  const [shippingType, setShippingType] = useState(1);
+  const [shippingTypesList, setShippingTypesList] = useState(shippingTypeProp || []);
+  const [shippingType, setShippingType] = useState(shippingTypeProp?.[0]?.shipping_type_id || 1);
   const [packageType, setPackageType] = useState(1);
   const [senderName, setSenderName] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
@@ -58,6 +61,10 @@ function CreateShipmentForm({
     fetch('/api/lookup?table=transittimes')
       .then((r) => r.json())
       .then(({ data }) => { if (data?.length > 0) setTransittimes(data); });
+
+    fetch('/api/lookup?table=shippingtypes')
+      .then((r) => r.json())
+      .then(({ data }) => { if (data?.length > 0) setShippingTypesList(data); });
   }, []);
 
   useEffect(() => {
@@ -357,9 +364,11 @@ function CreateShipmentForm({
                 required
               >
                 <option value="" disabled>Select Shipment Type</option>
-                <option value={1}>Van Move</option>
-                <option value={2}>Air Freight</option>
-                <option value={3}>Ship Freight</option>
+                {shippingTypesList.map((s) => (
+                  <option key={s.shipping_type_id} value={s.shipping_type_id}>
+                    {s.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
