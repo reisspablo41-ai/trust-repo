@@ -238,7 +238,7 @@ function UpdateShipmentMenu({
       }
     );
 
-    if (activeShipment.package_type.item_id === 1) {
+    if (!!activeShipment.shipment_pet_id) {
       const { petdata, peterror } = await updatePet(
         activeShipment.shipment_pet_id.pet_id,
         {
@@ -250,7 +250,7 @@ function UpdateShipmentMenu({
         }
       );
     }
-    if (activeShipment.package_type.item_id !== 1) {
+    if (!activeShipment.shipment_pet_id) {
       const { gooddata, gooderror } = await updateGoods(
         activeShipment.shipment_good_id.goods_id,
         {
@@ -705,7 +705,7 @@ function UpdateShipmentMenu({
                     <select
                       className="w-full p-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all shadow-sm appearance-none"
                       onChange={(e) => setShipmentType(Number(e.target.value))}
-                      value={activeShipment.package_type.item_id === 1 ? 1 : 2}
+                      value={activeShipment.shipment_pet_id ? 1 : 2}
                       name=""
                     >
                       <option value={1}>Pets</option>
@@ -714,22 +714,37 @@ function UpdateShipmentMenu({
                   </div>
                 </div>
               </div>
-              {activeShipment.package_type.item_id === 1 ? (
+              {activeShipment.shipment_pet_id ? (
                 <div className="bg-gray-50/50 p-6 md:p-8 rounded-2xl border border-gray-100 space-y-6">
                   <h3 className="text-sm font-bold text-accent uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">
                     Pet Details
                   </h3>
                   <div className="w-full flex md:flex-row xs:flex-col justify-between gap-6">
-                    <div className="flex flex-col md:w-1/2 xs:w-full">
-                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    <div className="flex flex-col md:col-span-2">
+                      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                         Package Type <span className="text-accent">*</span>
                       </label>
                       <select
                         className="w-full p-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all shadow-sm appearance-none"
                         onChange={handlePackageTypeUpdate}
                         name="packageType"
+                        value={formData.packageType}
                       >
-                        <option value={1}>Crate</option>
+                        {allPackageType && allPackageType.length > 0 ? (
+                          allPackageType
+                            .filter(
+                              (p) =>
+                                p.type.toLowerCase() === 'crate' ||
+                                p.type.toLowerCase() === 'fish tank'
+                            )
+                            .map((p) => (
+                              <option key={p.item_id} value={p.item_id}>
+                                {p.type}
+                              </option>
+                            ))
+                        ) : (
+                          <option value={1}>Crate</option>
+                        )}
                       </select>
                     </div>
                   </div>
@@ -819,14 +834,26 @@ function UpdateShipmentMenu({
                         name="packageType"
                         value={formData.packageType}
                       >
-                        {allPackageType.map((packagetype) => (
-                          <option
-                            key={packagetype.item_id}
-                            value={packagetype.item_id}
-                          >
-                            {packagetype.type}
-                          </option>
-                        ))}
+                        {allPackageType && allPackageType.length > 0 ? (
+                          allPackageType
+                            .filter(
+                              (p) =>
+                                p.type.toLowerCase() !== 'crate' &&
+                                p.type.toLowerCase() !== 'fish tank'
+                            )
+                            .map((p) => (
+                              <option key={p.item_id} value={p.item_id}>
+                                {p.type}
+                              </option>
+                            ))
+                        ) : (
+                          <>
+                            <option value={2}>Standard Packages</option>
+                            <option value={3}>Specialized Options</option>
+                            <option value={4}>Freight Packaging</option>
+                            <option value={5}>Customized Packaging</option>
+                          </>
+                        )}
                       </select>
                     </div>
                   </div>

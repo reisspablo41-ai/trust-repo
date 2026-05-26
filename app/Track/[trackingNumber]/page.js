@@ -211,7 +211,7 @@ async function Page({ params }) {
                 <InfoRow
                   icon={isPet ? <CgMenuHotdog className="text-secondary" /> : <LiaBoxSolid className="text-secondary" />}
                   label="Package Type"
-                  value={isPet ? 'Crate' : data.package_type?.type}
+                  value={data.package_type?.type || (isPet ? 'Crate' : 'N/A')}
                 />
                 <InfoRow
                   icon={isPet ? <PiDogFill className="text-secondary" /> : <TbNumber className="text-secondary" />}

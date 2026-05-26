@@ -68,6 +68,33 @@ function CreateShipmentForm({
   }, []);
 
   useEffect(() => {
+    if (Number(contentType) === 1) {
+      const firstPetType = allPackageType?.find(
+        (p) =>
+          p.type.toLowerCase() === 'crate' ||
+          p.type.toLowerCase() === 'fish tank'
+      );
+      if (firstPetType) {
+        setPackageType(firstPetType.item_id);
+      } else {
+        setPackageType(1);
+      }
+    } else {
+      const firstGoodType = allPackageType?.find(
+        (p) =>
+          p.type.toLowerCase() !== 'crate' &&
+          p.type.toLowerCase() !== 'fish tank'
+      );
+      if (firstGoodType) {
+        setPackageType(firstGoodType.item_id);
+      } else {
+        setPackageType(2);
+      }
+    }
+  }, [contentType, allPackageType]);
+
+
+  useEffect(() => {
     // Static country list — no external API dependency
     const COUNTRIES = [
       { name: 'Afghanistan', code: 'AF' }, { name: 'Albania', code: 'AL' }, { name: 'Algeria', code: 'DZ' },
@@ -614,7 +641,21 @@ function CreateShipmentForm({
                       onChange={(e) => setPackageType(e.target.value)}
                       name="packageType"
                     >
-                      <option value={1}>Crate</option>
+                      {allPackageType && allPackageType.length > 0 ? (
+                        allPackageType
+                          .filter(
+                            (p) =>
+                              p.type.toLowerCase() === 'crate' ||
+                              p.type.toLowerCase() === 'fish tank'
+                          )
+                          .map((p) => (
+                            <option key={p.item_id} value={p.item_id}>
+                              {p.type}
+                            </option>
+                          ))
+                      ) : (
+                        <option value={1}>Crate</option>
+                      )}
                     </select>
                   </div>
 
@@ -689,10 +730,26 @@ function CreateShipmentForm({
                       onChange={(e) => setPackageType(e.target.value)}
                       name="packageType"
                     >
-                      <option value={2}>Standard Packages</option>
-                      <option value={3}>Specialized Options</option>
-                      <option value={4}>Freight Packaging</option>
-                      <option value={5}>Customized Packaging</option>
+                      {allPackageType && allPackageType.length > 0 ? (
+                        allPackageType
+                          .filter(
+                            (p) =>
+                              p.type.toLowerCase() !== 'crate' &&
+                              p.type.toLowerCase() !== 'fish tank'
+                          )
+                          .map((p) => (
+                            <option key={p.item_id} value={p.item_id}>
+                              {p.type}
+                            </option>
+                          ))
+                      ) : (
+                        <>
+                          <option value={2}>Standard Packages</option>
+                          <option value={3}>Specialized Options</option>
+                          <option value={4}>Freight Packaging</option>
+                          <option value={5}>Customized Packaging</option>
+                        </>
+                      )}
                     </select>
                   </div>
                   <div className="flex flex-col">
